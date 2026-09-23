@@ -1,4 +1,4 @@
-# GB10 remote sudo methods
+# DGX Spark remote sudo methods
 
 ## Preferred: SUDO_ASKPASS (Hermes-compatible, not intercepted)
 
@@ -6,14 +6,14 @@ The agent blocks `echo password | sudo -S`. `SUDO_ASKPASS` supplies the password
 
 ```bash
 # 1. create the askpass script (once)
-ssh [GB10_USER]@[GB10_IP] "cat > /tmp/askpass.sh << 'EOS'
+ssh [DGX Spark_USER]@[DGX Spark_IP] "cat > /tmp/askpass.sh << 'EOS'
 #!/bin/bash
 echo '[SUDO_PASS]'
 EOS
 chmod +x /tmp/askpass.sh"
 
 # 2. when sudo is needed
-ssh [GB10_USER]@[GB10_IP] "SUDO_ASKPASS=/tmp/askpass.sh sudo -A your-command-here"
+ssh [DGX Spark_USER]@[DGX Spark_IP] "SUDO_ASKPASS=/tmp/askpass.sh sudo -A your-command-here"
 ```
 
 ## Method 2: Python subprocess (fallback, may be intercepted)

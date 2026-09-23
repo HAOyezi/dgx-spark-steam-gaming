@@ -1,20 +1,20 @@
-# How to Play Steam Games on a GB10 (DGX Spark, ARM64)
+# How to Play Steam Games on a DGX Spark (NVIDIA GB10 / ASUS GX10, ARM64)
 
-> Measured environment: NVIDIA DGX Spark (GB10, ARM64) + Ubuntu 24.04.4 LTS + GPU driver 580.173.02
+> Machine: NVIDIA DGX Spark — the GB10 chip (this unit is an ASUS GX10) — Ubuntu 24.04.4 LTS + GPU driver 580.173.02 + Ubuntu 24.04.4 LTS + GPU driver 580.173.02
 > Verified games: Kerbal Space Program, CS2 (Counter-Strike 2)
 > Every command in this document was actually run on the machine; measured 2026-09-22.
 >
-> **💡 Want your AI to set this up for you? See the [`skill/gb10-steam-gaming/`](skill/gb10-steam-gaming/SKILL.md) skill package** — once installed, your AI automatically applies the full measured procedure (including 13 troubleshooting reference docs) whenever "install games on GB10" comes up. Installation instructions: [INSTALL.md](INSTALL.md). This repo is de-personalized — it contains no real IPs, accounts or passwords.
+> **💡 Want your AI to set this up for you? See the [`skill/dgx-spark-steam-gaming/`](skill/dgx-spark-steam-gaming/SKILL.md) skill package** — once installed, your AI automatically applies the full measured procedure (including 13 troubleshooting reference docs) whenever "install games on DGX Spark" comes up. Installation instructions: [INSTALL.md](INSTALL.md). This repo is de-personalized — it contains no real IPs, accounts or passwords.
 
 ## 1. The principle in one line
 
-The GB10 is an ARM machine; Windows/Intel games (x86) can't run on it directly. The official solution uses three translation layers:
+The DGX Spark is an ARM machine; Windows/Intel games (x86) can't run on it directly. The official solution uses three translation layers:
 
 ```
 Windows game (x86 instructions)
     ↓  FEX emulator        —— x86 instructions translated to ARM64 (the game-logic part)
     ↓  Proton + DXVK       —— Windows graphics API translated to Vulkan
-    ↓  native GPU driver   —— the GB10 GPU renders directly; this part is ARM-native, near zero loss
+    ↓  native GPU driver   —— the DGX Spark GPU renders directly; this part is ARM-native, near zero loss
 ```
 
 Key point: graphics rendering goes through the native GPU driver, not the emulator — so AAA game frame rates come close to native. Only the game logic (CPU side) has translation loss.
@@ -63,13 +63,13 @@ When the Steam GUI is too unstable to switch languages, edit the game config dir
 
 ## 4. Remote play (streaming to your desktop)
 
-Turn the GB10 into a "game console" — install the client on your desktop and stream the picture with low keyboard/mouse/gamepad latency:
+Turn the DGX Spark into a "game console" — install the client on your desktop and stream the picture with low keyboard/mouse/gamepad latency:
 
 ```
-GB10 GPU → screen capture → Sunshine streaming service → network → Moonlight client (desktop)
+DGX Spark GPU → screen capture → Sunshine streaming service → network → Moonlight client (desktop)
 ```
 
-### 1. Install the streaming service on the GB10
+### 1. Install the streaming service on the DGX Spark
 
 ```bash
 # find the ubuntu-24.04-arm64 package on the GitHub releases page
@@ -85,9 +85,9 @@ Measured version: Sunshine 2026.516.143833, encoding via the GPU hardware encode
 
 Download the Windows version from the Moonlight website or GitHub releases. After install:
 
-- The GB10 is auto-discovered on the LAN (or enter its LAN IP manually)
+- The DGX Spark is auto-discovered on the LAN (or enter its LAN IP manually)
 - Enter the account/password set above
-- First connection requires submitting the pairing PIN on the streaming web page (`http://[GB10_IP]:47990`)
+- First connection requires submitting the pairing PIN on the streaming web page (`http://[DGX Spark_IP]:47990`)
 - Once connected, pick "Desktop" or a specific game
 
 Measured ports: 47984 (video), 47989 (control), 47990 (web config).
@@ -105,7 +105,7 @@ Measured ports: 47984 (video), 47989 (control), 47990 (web config).
    /snap/steam/current/usr/bin/FEXBash ./steamcmd.sh +login <user> +app_update <appid> +quit
    ```
 
-3. **GB10 has no independent outbound internet** (international bandwidth restrictions) — foreign download sources are slow or unreachable. Download games/files on the desktop first, then `scp` them to the GB10. Domestic mirrors (Tsinghua/Baidu) work.
+3. **DGX Spark has no independent outbound internet** (international bandwidth restrictions) — foreign download sources are slow or unreachable. Download games/files on the desktop first, then `scp` them to the DGX Spark. Domestic mirrors (Tsinghua/Baidu) work.
 4. **Snap updates are slow** — `snap refresh` showing "no updates" is normal; the official release cadence lags standalone FEX releases.
 5. **Game selection** — prefer single-player games on the Unity engine without strong anti-cheat; online games with EAC/BattlEye ban emulated environments — don't bother.
 

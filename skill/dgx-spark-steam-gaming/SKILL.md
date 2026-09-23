@@ -1,31 +1,31 @@
 ---
-name: gb10-steam-gaming
-description: Set up any GB10 (DGX Spark, ARM64) as a Steam game host so an AI can drive it end-to-end — preferred path is the Canonical Steam Snap (built-in FEX+Proton), manual FEX as fallback, plus Sunshine streaming + Moonlight. Measured & verified, no personal data.
+name: dgx-spark-steam-gaming
+description: Set up any NVIDIA DGX Spark (ARM64) as a Steam game host so an AI can drive it end-to-end — preferred path is the Canonical Steam Snap (built-in FEX+Proton), manual FEX as fallback, plus Sunshine streaming + Moonlight. Measured & verified, no personal data.
 category: gaming
 triggers:
   - FEX games
-  - GB10 gaming
+  - DGX Spark gaming
   - Steam ARM
   - x86 emulation
   - sunshine streaming
   - remote gaming
   - DGX Spark games
-  - install games on GB10
+  - install games on DGX Spark
   - steam snap
   - let AI play Steam
   - install Steam skill
 ---
 
-# Let Your AI Play Steam on a GB10 (Distributable Skill Package)
+# Let Your AI Play Steam on a DGX Spark (Distributable Skill Package)
 
-> This is a **de-personalized, directly distributable** operating skill. Once installed on any AI, the AI can follow the steps below to turn a GB10 (NVIDIA DGX Spark, ARM64) into a Steam game host for Windows/Intel games.
+> This is a **de-personalized, directly distributable** operating skill. Once installed on any AI, the AI can follow the steps below to turn an NVIDIA DGX Spark, ARM64) into a Steam game host for Windows/Intel games.
 >
-> **Read before use — placeholders:** every placeholder in this document of the form `[GB10_IP] / [GB10_USER] / [PROXY_PORT] / [STREAM_USER] / [STREAM_PASS] / [TUNNEL_PORT] / [SUDO_PASS]` stands for **your own machine's parameters**. Confirm them with the machine owner and substitute the real values before executing. This document contains no real IPs, accounts, passwords or ports — safe to publish.
+> **Read before use — placeholders:** every placeholder in this document of the form `[DGX Spark_IP] / [DGX Spark_USER] / [PROXY_PORT] / [STREAM_USER] / [STREAM_PASS] / [TUNNEL_PORT] / [SUDO_PASS]` stands for **your own machine's parameters**. Confirm them with the machine owner and substitute the real values before executing. This document contains no real IPs, accounts, passwords or ports — safe to publish.
 
 ## Requirements
 
-- One NVIDIA DGX Spark (GB10, ARM64, Blackwell GPU)
-- Ubuntu 24.04 ARM64 (stock GB10 OS)
+- One NVIDIA DGX Spark (DGX Spark, ARM64, Blackwell GPU)
+- Ubuntu 24.04 ARM64 (stock DGX Spark OS)
 - NVIDIA driver 580+ installed (any card showing up in `nvidia-smi` counts)
 - (for streaming) one client machine with Moonlight installed
 
@@ -44,7 +44,7 @@ This single command integrates:
 - Thunking config (Vulkan/GL passthrough)
 - bwrap sandbox adaptation
 
-**Measured performance (DGX Spark GB10):**
+**Measured performance (DGX Spark):**
 
 | Game | FPS | Notes |
 |------|:--:|------|
@@ -53,11 +53,11 @@ This single command integrates:
 | DOOM Eternal | smooth | Vulkan native rendering |
 | Dota 2 / CS2 | smooth | |
 
-**Why the GPU side runs near full speed:** DXVK/VKD3D translate Windows DirectX calls to Vulkan, and Vulkan on the GB10 Blackwell GPU is a **native ARM64 driver** — that part never goes through FEX CPU translation. Only game logic (CPU-side x86→ARM64) has translation loss, and the GB10's Cortex-X925 cores are strong enough.
+**Why the GPU side runs near full speed:** DXVK/VKD3D translate Windows DirectX calls to Vulkan, and Vulkan on the DGX Spark Blackwell GPU is a **native ARM64 driver** — that part never goes through FEX CPU translation. Only game logic (CPU-side x86→ARM64) has translation loss, and the DGX Spark's Cortex-X925 cores are strong enough.
 
 **Dev background:** Mitchell Augustin (author of `fex_autoinstall`) works on Canonical's NVIDIA DGX team; his experience is fully integrated into this snap.
 
-**Post-install GPU streaming check:** the GB10 DGX OS ships 4 native ARM64 GNOME games (Mahjongg/Mines/Solitaire/Sudoku). You can validate the Sunshine → Moonlight pipeline without Steam. See the "Zero-dependency streaming validation" section below.
+**Post-install GPU streaming check:** the DGX Spark's DGX OS ships 4 native ARM64 GNOME games (Mahjongg/Mines/Solitaire/Sudoku). You can validate the Sunshine → Moonlight pipeline without Steam. See the "Zero-dependency streaming validation" section below.
 
 > **The manual FEX + Steam steps below this line are the fallback/reference path. Use the snap first.**
 
@@ -74,7 +74,7 @@ Proton (DXVK/VKD3D, Windows API → Vulkan)
     ↓
 FEX-Emu (x86_64 instructions → ARM64 JIT + Vulkan Thunking GPU passthrough)
     ↓
-NVIDIA native driver (GB10 GPU renders directly)
+NVIDIA native driver (DGX Spark GPU renders directly)
     ↓
 Sunshine streaming → Moonlight client (remote play from the desktop)
 ```
@@ -83,10 +83,10 @@ Key point: **Vulkan Thunking** — FEX forwards x86 graphics API calls straight 
 
 ## Prerequisites
 
-- GB10 NVIDIA driver installed (580+)
+- DGX Spark NVIDIA driver installed (580+)
 - 121 GB unified memory
 - Ubuntu 24.04 ARM64
-- **GDM enabled** (the GB10 ships with GDM, providing a real NVIDIA Xorg + DRI3 3D acceleration; Xvfb has no DRI3 and the Steam GUI cannot render)
+- **GDM enabled** (the DGX Spark ships with GDM, providing a real NVIDIA Xorg + DRI3 3D acceleration; Xvfb has no DRI3 and the Steam GUI cannot render)
 
 ## Deployment steps
 
@@ -97,11 +97,11 @@ Key point: **Vulkan Thunking** — FEX forwards x86 graphics API calls straight 
 sudo apt-get install -y vulkan-tools
 
 # GPU device permissions (agent side can pass the password via py subprocess, see pitfalls)
-sudo usermod -aG video,render [GB10_USER]
+sudo usermod -aG video,render [DGX Spark_USER]
 # takes effect after re-login
 ```
 
-**The GB10 ships with GDM** (GNOME Display Manager) which provides a real Xorg display on `:0`.
+**The DGX Spark ships with GDM** (GNOME Display Manager) which provides a real Xorg display on `:0`.
 Xvfb is not needed — Xvfb has no DRI3 and Steam 3D rendering would fail.
 
 Configure GDM auto-login:
@@ -110,7 +110,7 @@ Configure GDM auto-login:
 # /etc/gdm3/custom.conf
 [daemon]
 AutomaticLoginEnable=true
-AutomaticLogin=[GB10_USER]
+AutomaticLogin=[DGX Spark_USER]
 
 # /etc/X11/xorg.conf (NVIDIA headless mode)
 Section "Device"
@@ -145,7 +145,7 @@ sudo apt-get update
 sudo apt-get install -y fex-emu-armv8.4 fex-emu-binfmt32 fex-emu-binfmt64 fex-emu-wine
 ```
 
-FEX package naming: `fex-emu-armv8.x` (GB10 uses `8.4`); binfmt comes in separate 32/64 packages.
+FEX package naming: `fex-emu-armv8.x` (DGX Spark uses `8.4`); binfmt comes in separate 32/64 packages.
 
 ### 4. Configure the x86-64 RootFS
 
@@ -226,7 +226,7 @@ tar xf "$ROOTFS/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz"
 
 Steam startup reports missing `libc.so.6` → x86 32-bit libs (i386) needed. Download libc6_i386.deb from the Ubuntu security archive and extract into the RootFS.
 
-If the archive connection is unstable, download via the desktop's VPN proxy and `scp` to the GB10.
+If the archive connection is unstable, download via the desktop's VPN proxy and `scp` to the DGX Spark.
 
 ### 7b. FEX Thunking config — required for Steam GUI rendering
 
@@ -280,8 +280,8 @@ Even with correct thunking config, FEX may still report `Vulkan missing requeste
 
 **Steps** (from the `MitchellAugustin/fex_autoinstall` script):
 
-1. **Download the NVIDIA Linux x86_64 driver .run on the desktop** (match the GB10 driver version → `cat /sys/module/nvidia/version`)
-2. **SCP to GB10 → `sh nv.run -x` to extract**
+1. **Download the NVIDIA Linux x86_64 driver .run on the desktop** (match the DGX Spark driver version → `cat /sys/module/nvidia/version`)
+2. **SCP to DGX Spark → `sh nv.run -x` to extract**
 3. **Copy 64-bit libs:** `NVIDIA-Linux-x86_64-*/lib*.so.*` → `$ROOTFS/lib/x86_64-linux-gnu/`, create `libXXX.so.0/.1/.2` symlinks
 4. **Copy 32-bit libs:** `NVIDIA-Linux-x86_64-*/32/lib*.so.*` dir → `$ROOTFS/lib/i386-linux-gnu/`
 5. **Copy the Vulkan ICD:** `nvidia_icd.json` → `$ROOTFS/usr/share/vulkan/icd.d/`
@@ -335,7 +335,7 @@ sudo systemctl enable --now sunshine
 sunshine --creds [STREAM_USER] [STREAM_PASS]   # username password
 ```
 
-Once Sunshine is configured, install the Moonlight client on the desktop and connect. Port connectivity check (Windows has no nc): `powershell -Command "Test-NetConnection -ComputerName [GB10_IP] -Port 47989"`
+Once Sunshine is configured, install the Moonlight client on the desktop and connect. Port connectivity check (Windows has no nc): `powershell -Command "Test-NetConnection -ComputerName [DGX Spark_IP] -Port 47989"`
 
 ### 9. Install Moonlight on the desktop + launch
 
@@ -359,7 +359,7 @@ start "" "C:\Program Files\Moonlight Game Streaming\Moonlight.exe"
 
 **Moonlight silent-install trap:** `/S` must be uppercase; the `/D=` path takes no quotes and must be the last (only) argument. The install produces no output — verify with `find C:/Program\ Files -name Moonlight.exe`.
 
-After install, launch Moonlight; it scans the LAN and finds the GB10 Sunshine automatically. The pairing PIN is at `http://[GB10_IP]:47990`.
+After install, launch Moonlight; it scans the LAN and finds the DGX Spark Sunshine automatically. The pairing PIN is at `http://[DGX Spark_IP]:47990`.
 
 ### Steam first launch — bwrap sandbox permanent hang + network issues
 
@@ -400,13 +400,13 @@ profile srt_bwrap /usr/libexec/steam-runtime-tools-0/srt-bwrap flags=(unconfined
 
 ```bash
 # ❌ wrong — steam.sh stalls in the bwrap infinite wait
-FEXBash -c "bash /home/[GB10_USER]/.local/share/Steam/steam.sh"
+FEXBash -c "bash /home/[DGX Spark_USER]/.local/share/Steam/steam.sh"
 
 # ✅ correct — execute the 32-bit steam binary directly
 export FEX_ROOTFS=$HOME/.local/share/fex-emu/RootFS/Ubuntu_24_04
 export DISPLAY=:0
 export XAUTHORITY=/run/user/1000/gdm/Xauthority
-FEXBash -c "DISPLAY=:0 HOME=/home/[GB10_USER] exec /home/[GB10_USER]/.local/share/Steam/ubuntu12_32/steam"
+FEXBash -c "DISPLAY=:0 HOME=/home/[DGX Spark_USER] exec /home/[DGX Spark_USER]/.local/share/Steam/ubuntu12_32/steam"
 ```
 
 After executing the steam binary directly, its built-in updater downloads the ~200MB client update. The log shows `Downloading manifest: https://client-update.steamstatic.com/steam_client_ubuntu12`.
@@ -430,23 +430,23 @@ The HTTP download library inside the steam binary (ubuntu12_32/steam) is **funda
 **Working bypasses (by recommendation):**
 
 1. **Manual manifest download** (first choice when the desktop has no WSL; see `references/steam-manual-download.md`) — curl the manifest yourself. **Key finding:** each component in the manifest has `file` (standard zip) and `zipvz` (Valve VZ compression) — **both sets are required**. The correct CDN base URL is `https://cdn.steamstatic.com/client/` (NOT `client-update.steamstatic.com/steam_client_ubuntu12/`). Total ~710 MB (zip ≈350MB + vz ≈360MB). Both sets must land in `~/.local/share/Steam/package/`, then extract to the Steam root.
-2. **Desktop WSL + scp** (easiest when WSL is available) — install WSL Ubuntu + Steam Linux on the desktop, let it update fully once, then `scp -r ~/.local/share/Steam/{linux64,package,clientui}` to the same paths on the GB10; login state can be copied along.
+2. **Desktop WSL + scp** (easiest when WSL is available) — install WSL Ubuntu + Steam Linux on the desktop, let it update fully once, then `scp -r ~/.local/share/Steam/{linux64,package,clientui}` to the same paths on the DGX Spark; login state can be copied along.
 3. Flatpak Steam (ships a full runtime, skips self-update)
 4. SteamCMD `+force_install_dir` to install games directly, run via FEX + Proton
 
 **Note:** this bug **only affects Steam client self-update**. 3D rendering of non-Valve games (via FEX Vulkan Thunking straight to the GPU) is unaffected. `steamcmd` is affected too (same HTTP library).
 
-**Long SSH reverse-tunnel downloads drop** — keep alive with `ServerAliveInterval=30 ServerAliveCountMax=3 ExitOnForwardFailure=yes`. When it drops, re-run `ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [GB10_USER]@[GB10_IP]`; on the GB10, `curl -x http://127.0.0.1:8118 -so /dev/null -w '%{http_code}'` returning `000`/exit 56 means the tunnel is down.
+**Long SSH reverse-tunnel downloads drop** — keep alive with `ServerAliveInterval=30 ServerAliveCountMax=3 ExitOnForwardFailure=yes`. When it drops, re-run `ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [DGX Spark_USER]@[DGX Spark_IP]`; on the DGX Spark, `curl -x http://127.0.0.1:8118 -so /dev/null -w '%{http_code}'` returning `000`/exit 56 means the tunnel is down.
 
-**Trap 3: GB10 has no direct internet — share the desktop's VPN via SSH reverse tunnel**
+**Trap 3: DGX Spark has no direct internet — share the desktop's VPN via SSH reverse tunnel**
 
-The GB10's direct connection is slow and some CDNs are unreachable. Share the desktop's VPN proxy with the GB10 through an SSH tunnel:
+The DGX Spark's direct connection is slow and some CDNs are unreachable. Share the desktop's VPN proxy with the DGX Spark through an SSH tunnel:
 
 ```bash
-# desktop side: establish the reverse tunnel (desktop socks5:[PROXY_PORT] → GB10 localhost:[TUNNEL_PORT])
-ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [GB10_USER]@[GB10_IP]
+# desktop side: establish the reverse tunnel (desktop socks5:[PROXY_PORT] → DGX Spark localhost:[TUNNEL_PORT])
+ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [DGX Spark_USER]@[DGX Spark_IP]
 
-# GB10 side: verify the tunnel works
+# DGX Spark side: verify the tunnel works
 curl -x socks5h://127.0.0.1:[TUNNEL_PORT] -so /dev/null -w '%{http_code}' https://store.steampowered.com
 # → expect 200
 ```
@@ -464,7 +464,7 @@ echo 'export FEX_ROOTFS=$HOME/.local/share/fex-emu/RootFS/Ubuntu_24_04' >> ~/.ba
 **⚠️ FEX_ROOTFS does not persist across SSH sessions**. Every time you run a FEX command over SSH, set the env var explicitly:
 
 ```bash
-ssh [GB10_USER]@[GB10_IP] "FEX_ROOTFS=/path/to/rootfs FEXBash -c '...'"
+ssh [DGX Spark_USER]@[DGX Spark_IP] "FEX_ROOTFS=/path/to/rootfs FEXBash -c '...'"
 ```
 
 Non-interactive SSH does not load `.bashrc`, so don't rely on persisted env vars.
@@ -475,7 +475,7 @@ Non-interactive SSH does not load `.bashrc`, so don't rely on persisted env vars
 
 **Do not start from scratch installing FEX, configuring the RootFS, installing Steam, patching bwrap...** That pipeline is extremely complex (the 200+ lines in the latter half of this skill are the evidence). Canonical has bundled all of it into `snap install steam --stable` — one command.
 
-**Trigger signals:** user says "install games on GB10", "play on DGX Spark", "Steam on ARM" → **mention the snap first**, don't list manual steps.
+**Trigger signals:** user says "install games on DGX Spark", "play on DGX Spark", "Steam on ARM" → **mention the snap first**, don't list manual steps.
 
 **Exception:** only fall back to the manual path when `snap install steam` is genuinely unavailable (snapd not running, no sudo, offline, etc.).
 
@@ -502,9 +502,9 @@ Fallback: pass the password via a Python subprocess (see `references/sudo-via-py
 
 ### Xvfb has no DRI3 → Steam 3D rendering fails
 
-Xvfb is pure software rendering with no DRI3 GPU acceleration. The Steam GUI (Chromium Embedded Framework) needs real GPU rendering. **The GB10 ships with GDM**; after restarting GDM, an NVIDIA Xorg starts on `:0` with full DRI3/GLX/Vulkan support.
+Xvfb is pure software rendering with no DRI3 GPU acceleration. The Steam GUI (Chromium Embedded Framework) needs real GPU rendering. **The DGX Spark ships with GDM**; after restarting GDM, an NVIDIA Xorg starts on `:0` with full DRI3/GLX/Vulkan support.
 
-GDM Xorg authentication lives at `/run/user/1000/gdm/Xauthority` (UID 1000 = [GB10_USER]). Access it via the `XAUTHORITY` env var.
+GDM Xorg authentication lives at `/run/user/1000/gdm/Xauthority` (UID 1000 = [DGX Spark_USER]). Access it via the `XAUTHORITY` env var.
 
 ### Steam 32-bit bootstrap — exact paths
 
@@ -585,19 +585,19 @@ Environment=DISPLAY=:0
 Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
 ```
 
-### GB10 has no outbound internet proxy
+### DGX Spark has no outbound internet proxy
 
-The GB10's direct connection is slow; archive.ubuntu.com may be unreachable. Download on the desktop via its VPN proxy, then `scp` to the GB10.
+The DGX Spark's direct connection is slow; archive.ubuntu.com may be unreachable. Download on the desktop via its VPN proxy, then `scp` to the DGX Spark.
 
-**Desktop → GB10 file transfer:** the desktop reaches the internet via `socks5h://127.0.0.1:[PROXY_PORT]`. Download files there, then `scp` them to the GB10.
+**Desktop → DGX Spark file transfer:** the desktop reaches the internet via `socks5h://127.0.0.1:[PROXY_PORT]`. Download files there, then `scp` them to the DGX Spark.
 
 ## Zero-dependency streaming validation (works with Steam not logged in / offline)
 
 When Steam is in offline mode, not logged in, or has no games, you can still validate the full GPU → Sunshine → Moonlight pipeline:
 
-### Native ARM64 games preinstalled on the GB10
+### Native ARM64 games preinstalled on the DGX Spark
 
-The GB10 DGX OS ships 4 GNOME games, no install needed:
+The DGX Spark's DGX OS ships 4 GNOME games, no install needed:
 
 | Game | Command | Type |
 |------|------|------|
@@ -610,7 +610,7 @@ Launch directly with `DISPLAY=:0 gnome-mahjongg &` — no Steam required.
 
 ### PyOpenGL 3D rotating cube
 
-When you need to demo GPU 3D rendering, write a 60FPS rotating colored cube in Python + PyOpenGL (pygame and PyOpenGL are preinstalled on the GB10). Script template in `references/pyopengl-3d-demo.py`.
+When you need to demo GPU 3D rendering, write a 60FPS rotating colored cube in Python + PyOpenGL (pygame and PyOpenGL are preinstalled on the DGX Spark). Script template in `references/pyopengl-3d-demo.py`.
 
 Launch: `DISPLAY=:0 python3 3d_test_game.py &`
 
@@ -635,12 +635,12 @@ Launch: `DISPLAY=:0 python3 3d_test_game.py &`
 - `references/steam-client-full-download.md` — full Steam client download + pack + SCP + extract workflow (battle-tested 2026-07-28)
 - `references/steamui-library-dependency-chain.md` — complete steamui.so i386 dependency chain (package names, versions, download URLs)
 - `references/fex-thunking-config.md` — FEX thunking config deep-dive (from the fex_autoinstall reference project)
-- `references/dell-proxy-downloads.md` — standard flow: download on the desktop via VPN + scp to the GB10
+- `references/dell-proxy-downloads.md` — standard flow: download on the desktop via VPN + scp to the DGX Spark
 - `references/gdm-headless-display.md` — GDM auto-login + headless Xorg config
 - `references/ssh-tunnel-proxychains.md` — SSH reverse tunnel + proxychains4 config
 - `references/sudo-via-python.md` — working ways to pass the sudo password remotely
 - `references/steam-bwrap-workarounds.md` — check_requirements disable / SUDO_ASKPASS / AppArmor snippets
 - `references/pyopengl-3d-demo.py` — PyOpenGL rotating-cube script to validate the GPU → Sunshine → Moonlight pipeline (no Steam needed)
-- `scripts/extract-steam-packages.sh` — extract Steam client zips into the correct GB10 directories + permission fix
+- `scripts/extract-steam-packages.sh` — extract Steam client zips into the correct DGX Spark directories + permission fix
 - `scripts/download-steam-zips.sh` — batch-download standard `.zip.<hash>` files from the desktop
 - `scripts/download-steam-vz.sh` — batch-download `.zip.vz.<hash>_<size>` VZ variant files from the desktop

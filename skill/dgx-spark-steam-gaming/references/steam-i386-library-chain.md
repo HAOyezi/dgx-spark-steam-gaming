@@ -60,7 +60,7 @@ All i386 debs come from `http://archive.ubuntu.com/ubuntu/pool/main/`.
 ## Extraction Pattern
 
 ```bash
-ROOTFS="/home/[GB10_USER]/.local/share/fex-emu/RootFS/Ubuntu_24_04"
+ROOTFS="/home/[DGX Spark_USER]/.local/share/fex-emu/RootFS/Ubuntu_24_04"
 for deb in *.deb; do
     dpkg-deb -x "$deb" "$ROOTFS/"
 done

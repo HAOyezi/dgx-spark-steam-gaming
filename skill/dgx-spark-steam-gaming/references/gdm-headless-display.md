@@ -1,6 +1,6 @@
-# GDM Headless Display Configuration (GB10 DGX Spark)
+# GDM Headless Display Configuration (DGX Spark)
 
-The GB10 has no physical display, but ships with GDM3 providing a real NVIDIA Xorg. Key distinction:
+The DGX Spark has no physical display, but ships with GDM3 providing a real NVIDIA Xorg. Key distinction:
 - Xvfb: pure software rendering, no DRI3 → Steam 3D GUI cannot render
 - GDM + NVIDIA Xorg: real GPU DRI3/GLX/Vulkan support → Steam works
 
@@ -10,7 +10,7 @@ The GB10 has no physical display, but ships with GDM3 providing a real NVIDIA Xo
 # /etc/gdm3/custom.conf
 [daemon]
 AutomaticLoginEnable=true
-AutomaticLogin=[GB10_USER]
+AutomaticLogin=[DGX Spark_USER]
 ```
 
 ## NVIDIA headless Xorg.conf

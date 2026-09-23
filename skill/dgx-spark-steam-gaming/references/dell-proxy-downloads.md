@@ -1,19 +1,19 @@
-# Desktop proxy downloads + SCP to the GB10
+# Desktop proxy downloads + SCP to the DGX Spark
 
 ## Pattern
 
-The GB10's direct connection may be slow or time out on `archive.ubuntu.com`. Standard flow:
+The DGX Spark's direct connection may be slow or time out on `archive.ubuntu.com`. Standard flow:
 
 ```bash
 # 1. download on the desktop side via the VPN
 curl -x socks5h://127.0.0.1:[PROXY_PORT] -L -o /path/to/file.deb \
   "http://archive.ubuntu.com/ubuntu/pool/main/g/glibc/libc6_2.43-2ubuntu2_i386.deb"
 
-# 2. scp to the GB10
-scp /path/to/file.deb [GB10_USER]@[GB10_IP]:/tmp/
+# 2. scp to the DGX Spark
+scp /path/to/file.deb [DGX Spark_USER]@[DGX Spark_IP]:/tmp/
 
-# 3. extract into the RootFS on the GB10 (when using a deb)
-ssh [GB10_USER]@[GB10_IP] '
+# 3. extract into the RootFS on the DGX Spark (when using a deb)
+ssh [DGX Spark_USER]@[DGX Spark_IP] '
   ROOTFS=$HOME/.local/share/fex-emu/RootFS/Ubuntu_24_04
   dpkg-deb -x /tmp/file.deb $ROOTFS/
 '

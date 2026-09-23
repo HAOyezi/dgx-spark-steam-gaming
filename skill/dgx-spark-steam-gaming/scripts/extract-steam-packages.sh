@@ -56,4 +56,4 @@ ls -la "$STEAM_ROOT/linux64/steamclient.so" 2>/dev/null || echo "  MISSING"
 
 echo "=== done ==="
 echo "Now launch Steam directly (bypass bwrap):"
-echo "  FEX_ROOTFS=... DISPLAY=:0 XAUTHORITY=... FEXBash -c 'HOME=/home/[GB10_USER] exec \$STEAM_ROOT/ubuntu12_32/steam'"
+echo "  FEX_ROOTFS=... DISPLAY=:0 XAUTHORITY=... FEXBash -c 'HOME=/home/[DGX Spark_USER] exec \$STEAM_ROOT/ubuntu12_32/steam'"

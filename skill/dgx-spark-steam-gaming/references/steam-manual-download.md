@@ -10,13 +10,13 @@ The Steam bootstrap binary downloads a JSON manifest from `https://cdn.steamstat
 
 **Both sets must be downloaded** into `~/.local/share/Steam/package/`, otherwise Steam reports `missing or incorrect size` at startup.
 
-Bypass the Steam binary entirely: **download from the desktop via the VPN + scp to the GB10** to achieve the equivalent of the "first update."
+Bypass the Steam binary entirely: **download from the desktop via the VPN + scp to the DGX Spark** to achieve the equivalent of the "first update."
 
 ## Steps
 
 ### ⚡ Recommended: desktop download + SCP (more stable)
 
-The GB10-side SSH tunnel tends to drop under heavy download. **Best approach:** download all files on the desktop through the VPN proxy, pack them, and SCP to the GB10 in one shot.
+The DGX Spark-side SSH tunnel tends to drop under heavy download. **Best approach:** download all files on the desktop through the VPN proxy, pack them, and SCP to the DGX Spark in one shot.
 
 #### 1. Fetch the manifest on the desktop
 
@@ -43,12 +43,12 @@ done
 
 Total ≈ 710 MB (standard zips ~350MB + VZ ~360MB; 28 file entries + 22 zipvz entries).
 
-#### 3. Pack + SCP to the GB10
+#### 3. Pack + SCP to the DGX Spark
 
 ```bash
 tar -czf steam_pkg.tar.gz *.zip.* steam_client_ubuntu12
-scp steam_pkg.tar.gz [GB10_USER]@[GB10_IP]:/tmp/
-ssh [GB10_USER]@[GB10_IP] "
+scp steam_pkg.tar.gz [DGX Spark_USER]@[DGX Spark_IP]:/tmp/
+ssh [DGX Spark_USER]@[DGX Spark_IP] "
   mkdir -p ~/.local/share/Steam/package
   cd ~/.local/share/Steam/package
   tar xzf /tmp/steam_pkg.tar.gz
@@ -66,9 +66,9 @@ chmod +x ~/.local/share/Steam/ubuntu12_32/steam
 chmod +x ~/.local/share/Steam/linux64/steam 2>/dev/null
 ```
 
-### 🔧 Fallback: download on the GB10 through the SSH tunnel (unstable but less work)
+### 🔧 Fallback: download on the DGX Spark through the SSH tunnel (unstable but less work)
 
-If the tunnel is stable, you can also download directly on the GB10.
+If the tunnel is stable, you can also download directly on the DGX Spark.
 
 ### 5. Extract into the correct directories
 
@@ -93,8 +93,8 @@ echo "manual_install" > $DEST/steam_client_ubuntu12.installed
 export FEX_ROOTFS=$HOME/.local/share/fex-emu/RootFS/Ubuntu_24_04
 export DISPLAY=:0
 export XAUTHORITY=/run/user/1000/gdm/Xauthority
-FEXBash -c "HOME=/home/[GB10_USER] DISPLAY=:0 \
-    exec /home/[GB10_USER]/.local/share/Steam/ubuntu12_32/steam"
+FEXBash -c "HOME=/home/[DGX Spark_USER] DISPLAY=:0 \
+    exec /home/[DGX Spark_USER]/.local/share/Steam/ubuntu12_32/steam"
 ```
 
 ## Key differences vs the WSL-scp approach

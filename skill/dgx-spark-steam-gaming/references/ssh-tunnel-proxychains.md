@@ -1,15 +1,15 @@
-# GB10 SSH Reverse Tunnel + Proxychains, Detailed Config
+# DGX Spark SSH Reverse Tunnel + Proxychains, Detailed Config
 
-## SSH reverse tunnel (desktop VPN → GB10)
+## SSH reverse tunnel (desktop VPN → DGX Spark)
 
 The desktop's VPN provides a socks5 proxy at `127.0.0.1:[PROXY_PORT]`.
-The GB10 is on the same LAN (at [GB10_IP]), but its direct connection reaches the Steam CDN and some foreign sites very slowly.
+The DGX Spark is on the same LAN (at [DGX Spark_IP]), but its direct connection reaches the Steam CDN and some foreign sites very slowly.
 
-Expose the desktop's proxy port to the GB10 via an SSH reverse tunnel:
+Expose the desktop's proxy port to the DGX Spark via an SSH reverse tunnel:
 
 ```bash
 # run on the desktop (establishes a persistent tunnel)
-ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [GB10_USER]@[GB10_IP]
+ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [DGX Spark_USER]@[DGX Spark_IP]
 
 # parameter notes:
 #   -f  run in background
@@ -19,7 +19,7 @@ ssh -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [GB10_USER]@[GB10_IP]
 
 **Verify the tunnel:**
 ```bash
-# test on the GB10
+# test on the DGX Spark
 curl -x socks5h://127.0.0.1:[TUNNEL_PORT] -so /dev/null -w '%{http_code}' https://store.steampowered.com
 # expect 200
 ```
@@ -27,7 +27,7 @@ curl -x socks5h://127.0.0.1:[TUNNEL_PORT] -so /dev/null -w '%{http_code}' https:
 **Tunnel persistence** (auto-reconnect after drops):
 ```bash
 # use autossh on the desktop
-autossh -M 0 -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [GB10_USER]@[GB10_IP]
+autossh -M 0 -f -N -R [TUNNEL_PORT]:127.0.0.1:[PROXY_PORT] [DGX Spark_USER]@[DGX Spark_IP]
 ```
 
 ## Proxychains configuration

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""GB10 GPU rendering validation — rotating colored cube (PyOpenGL)
+"""DGX Spark GPU rendering validation — rotating colored cube (PyOpenGL)
 Used to validate the full GPU -> Sunshine -> Moonlight pipeline, no Steam needed.
-Dependencies: pygame, PyOpenGL (preinstalled on the GB10)
+Dependencies: pygame, PyOpenGL (preinstalled on the DGX Spark)
 Launch: DISPLAY=:0 python3 3d_test_game.py &
 Press ESC to quit
 """
@@ -12,7 +12,7 @@ from OpenGL.GLU import *
 
 pygame.init()
 pygame.display.set_mode((1280, 720), DOUBLEBUF | OPENGL)
-pygame.display.set_caption('GB10 Game Test - 3D')
+pygame.display.set_caption('DGX Spark Game Test - 3D')
 
 gluPerspective(45, 1280/720, 0.1, 50)
 glTranslatef(0, 0, -5)

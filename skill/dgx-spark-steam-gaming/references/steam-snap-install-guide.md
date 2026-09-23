@@ -24,7 +24,7 @@ sudo snap install steam --stable
 | FEX Thunking | Vulkan/GL calls go straight to the native GPU driver |
 | bwrap sandbox adaptation | pressure-vessel compatibility |
 
-## Measured performance (DGX Spark GB10, Ubuntu 24.04 ARM64)
+## Measured performance (DGX Spark, Ubuntu 24.04 ARM64)
 
 Sources: Tom's Hardware, WCCFTech, Reddit r/nvidia, Level1Techs forums
 
@@ -42,14 +42,14 @@ Sources: Tom's Hardware, WCCFTech, Reddit r/nvidia, Level1Techs forums
 ```
 Game (DirectX) → DXVK/VKD3D → Vulkan API
                                  ↓
-                     GB10 Blackwell GPU (native ARM64 driver)
+                     DGX Spark Blackwell GPU (native ARM64 driver)
                                  ↓
                      Vulkan shader = native ARM64 execution ✅
 ```
 
 - **DXVK/VKD3D translate the Windows graphics API to Vulkan** — Vulkan is cross-platform; the shader intermediate representation (SPIR-V) runs directly on the ARM64 driver
 - **FEX "Thunking"** — Vulkan/GL API calls go straight to the native driver, no CPU translation
-- **The only bottleneck is game logic** — x86 CPU code goes through FEX JIT translation; the GB10's Cortex-X925 is strong enough
+- **The only bottleneck is game logic** — x86 CPU code goes through FEX JIT translation; the DGX Spark's Cortex-X925 is strong enough
 
 ## Games that don't fit
 
@@ -69,7 +69,7 @@ DISPLAY=:0 gnome-mahjongg &
 DISPLAY=:0 python3 3d_test_game.py &
 ```
 
-Then connect Moonlight to the GB10 → Desktop and the picture appears.
+Then connect Moonlight to the DGX Spark → Desktop and the picture appears.
 
 ## References
 

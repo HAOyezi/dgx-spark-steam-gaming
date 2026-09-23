@@ -2,7 +2,7 @@
 
 ## Background
 
-Steam's built-in HTTP update library is completely unusable under FEX-Emu (reports `http error 0`). The only workaround is to manually download all client files from the Valve CDN on a machine with internet (the desktop) via a VPN proxy, then `scp` them to the GB10 for deployment.
+Steam's built-in HTTP update library is completely unusable under FEX-Emu (reports `http error 0`). The only workaround is to manually download all client files from the Valve CDN on a machine with internet (the desktop) via a VPN proxy, then `scp` them to the DGX Spark for deployment.
 
 ## The manifest file
 
@@ -28,7 +28,7 @@ Each component comes in two compression formats (**both are required**):
 ### Step 1: extract the manifest
 
 ```bash
-# copy the manifest to the working dir on the GB10
+# copy the manifest to the working dir on the DGX Spark
 # or fetch it straight from the Valve CDN: curl "https://cdn.steamstatic.com/client/steam_client_ubuntu12"
 ```
 
@@ -70,18 +70,18 @@ ls | grep "\.zip\." | grep -v "\.vz\." > /tmp/zip_files.txt
 tar -czf /c/Users/[WINDOWS_USER]/Desktop/steam_zips.tar.gz -T /tmp/zip_files.txt
 ```
 
-### Step 4: SCP to the GB10
+### Step 4: SCP to the DGX Spark
 
 ```bash
 # ⚠️ scp uses /c/Users/... form (MSYS2), not C:\Users\...
-scp /c/Users/[WINDOWS_USER]/Desktop/steam_vz.tar.gz [GB10_USER]@[GB10_IP]:/tmp/
-scp /c/Users/[WINDOWS_USER]/Desktop/steam_zips.tar.gz [GB10_USER]@[GB10_IP]:/tmp/
+scp /c/Users/[WINDOWS_USER]/Desktop/steam_vz.tar.gz [DGX Spark_USER]@[DGX Spark_IP]:/tmp/
+scp /c/Users/[WINDOWS_USER]/Desktop/steam_zips.tar.gz [DGX Spark_USER]@[DGX Spark_IP]:/tmp/
 ```
 
-### Step 5: unpack on the GB10
+### Step 5: unpack on the DGX Spark
 
 ```bash
-cd /home/[GB10_USER]/.local/share/Steam/package
+cd /home/[DGX Spark_USER]/.local/share/Steam/package
 tar xzf /tmp/steam_vz.tar.gz    # VZ files
 tar xzf /tmp/steam_zips.tar.gz  # standard zip files
 ```
@@ -91,26 +91,26 @@ tar xzf /tmp/steam_zips.tar.gz  # standard zip files
 ```bash
 # these zips are not standalone packages — they're Steam client components
 # they must be extracted into ~/.local/share/Steam/
-cd /home/[GB10_USER]/.local/share/Steam/package
+cd /home/[DGX Spark_USER]/.local/share/Steam/package
 for f in *.zip.*; do
     case $(file -b "$f") in
-        "Zip archive"*) unzip -o "$f" -d /home/[GB10_USER]/.local/share/Steam/;;
+        "Zip archive"*) unzip -o "$f" -d /home/[DGX Spark_USER]/.local/share/Steam/;;
         *) echo "Skip $f (not a zip archive)";;
     esac
 done
 
 # ⚠️ fix execute permissions (files extracted via dpkg-deb/unzip have no x bit)
-chmod +x /home/[GB10_USER]/.local/share/Steam/ubuntu12_32/steam
-find /home/[GB10_USER]/.local/share/Steam -name 'steamwebhelper' -exec chmod +x {} \;
+chmod +x /home/[DGX Spark_USER]/.local/share/Steam/ubuntu12_32/steam
+find /home/[DGX Spark_USER]/.local/share/Steam -name 'steamwebhelper' -exec chmod +x {} \;
 ```
 
 ## Verification
 
 ```bash
-file /home/[GB10_USER]/.local/share/Steam/ubuntu12_32/steam
+file /home/[DGX Spark_USER]/.local/share/Steam/ubuntu12_32/steam
 # → ELF 32-bit LSB pie executable, Intel 80386
-ls -la /home/[GB10_USER]/.local/share/Steam/linux64/steamclient.so
-du -sh /home/[GB10_USER]/.local/share/Steam/package
+ls -la /home/[DGX Spark_USER]/.local/share/Steam/linux64/steamclient.so
+du -sh /home/[DGX Spark_USER]/.local/share/Steam/package
 # → about 1.1 GB
 ```
 

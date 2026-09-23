@@ -7,7 +7,7 @@ In Steam's `steam.sh`, `function check_requirements()` calls `srt-bwrap --bind /
 ```python
 import subprocess
 
-with open("/home/[GB10_USER]/.local/share/Steam/steam.sh", "r") as f:
+with open("/home/[DGX Spark_USER]/.local/share/Steam/steam.sh", "r") as f:
     c = f.read()
 
 # exact match on the function definition + first body line
@@ -16,7 +16,7 @@ new = "function check_requirements()\x0a{\x0a\x09return 0\x0a\x09local srt=\"$1\
 
 if old in c:
     c = c.replace(old, new, 1)
-    with open("/home/[GB10_USER]/.local/share/Steam/steam.sh", "w") as f:
+    with open("/home/[DGX Spark_USER]/.local/share/Steam/steam.sh", "w") as f:
         f.write(c)
     print("PATCH OK")
 else:
@@ -62,12 +62,12 @@ profile srt_bwrap /usr/libexec/steam-runtime-tools-0/srt-bwrap flags=(unconfined
 
 ```bash
 # after the check_requirements patch + AppArmor:
-FEX_ROOTFS=/home/[GB10_USER]/.local/share/fex-emu/RootFS/Ubuntu_24_04 \
-DISPLAY=:0 XAUTHORITY=/run/user/1000/gdm/Xauthority HOME=/home/[GB10_USER] \
-FEXBash -c "STEAMOS=1 DISPLAY=:0 HOME=/home/[GB10_USER] /usr/lib/steam/bin_steam.sh -noverifyfiles"
+FEX_ROOTFS=/home/[DGX Spark_USER]/.local/share/fex-emu/RootFS/Ubuntu_24_04 \
+DISPLAY=:0 XAUTHORITY=/run/user/1000/gdm/Xauthority HOME=/home/[DGX Spark_USER] \
+FEXBash -c "STEAMOS=1 DISPLAY=:0 HOME=/home/[DGX Spark_USER] /usr/lib/steam/bin_steam.sh -noverifyfiles"
 
 # offline mode skips update checks:
-FEXBash -c "STEAMOS=1 DISPLAY=:0 HOME=/home/[GB10_USER] exec /home/[GB10_USER]/.local/share/Steam/ubuntu12_32/steam -noverifyfiles -skipinitialbootstrap -offline"
+FEXBash -c "STEAMOS=1 DISPLAY=:0 HOME=/home/[DGX Spark_USER] exec /home/[DGX Spark_USER]/.local/share/Steam/ubuntu12_32/steam -noverifyfiles -skipinitialbootstrap -offline"
 ```
 
 ## 5. Verifying Steam's X11 window
@@ -87,5 +87,5 @@ for wid in win_ids:
 ## 6. PowerShell port connectivity test (Windows)
 
 ```powershell
-Test-NetConnection -ComputerName [GB10_IP] -Port 47989
+Test-NetConnection -ComputerName [DGX Spark_IP] -Port 47989
 ```

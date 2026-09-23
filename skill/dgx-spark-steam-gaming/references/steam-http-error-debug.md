@@ -1,7 +1,7 @@
 # Steam HTTP Error 0 — Full Proxy Debug Log
 
 **Date:** 2026-07-27
-**Environment:** GB10 (DGX Spark) Ubuntu 24.04 aarch64, FEX-Emu armv8.4 (PPA)
+**Environment:** DGX Spark Ubuntu 24.04 aarch64, FEX-Emu armv8.4 (PPA)
 **Steam binary:** ubuntu12_32/steam (ELF 32-bit x86)
 
 ## Error Signature
@@ -67,4 +67,4 @@ Steam uses Valve's custom Tier0 HTTP library which likely uses x86-specific CPU 
 The only confirmed workaround is to skip the self-update entirely by pre-populating the Steam client files from a working x86 Linux installation:
 1. Install Steam on Dell WSL Ubuntu or another x86 machine
 2. Let it fully update
-3. `scp -r` the `linux64/`, `package/`, and `clientui/` directories from `~/.local/share/Steam/` to GB10
+3. `scp -r` the `linux64/`, `package/`, and `clientui/` directories from `~/.local/share/Steam/` to DGX Spark
