@@ -17,7 +17,7 @@ Hermes Agent's skills directory is `~/.hermes/skills/` (or the skills path in it
 
 ```bash
 # after cloning the repo, let Hermes install it itself:
-#  tell Hermes: "install the gb10-steam-gaming skill directory into my skills"
+#  tell Hermes: "install the dgx-spark-steam-gaming skill directory into my skills"
 ```
 
 ## Using it after install
